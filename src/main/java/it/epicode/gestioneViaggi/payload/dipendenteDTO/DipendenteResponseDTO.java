@@ -5,5 +5,6 @@ public record DipendenteResponseDTO(
         String username,
         String nome,
         String cognome,
-        String email
+        String email,
+        String avatarUrl
 ) {}

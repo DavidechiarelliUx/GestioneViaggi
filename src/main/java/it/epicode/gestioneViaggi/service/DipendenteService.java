@@ -62,7 +62,8 @@ public class DipendenteService {
                 dipendente.getUsername(),
                 dipendente.getNome(),
                 dipendente.getCognome(),
-                dipendente.getEmail()
+                dipendente.getEmail(),
+                dipendente.getAvatarUrl()
         );
     }
 
@@ -97,5 +98,13 @@ public class DipendenteService {
         Dipendente dipendente = dipendenteRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(id));
         dipendenteRepository.delete(dipendente);
+    }
+
+    public DipendenteResponseDTO uploadAvatar(Long id, String avatarUrl) {
+        Dipendente d = dipendenteRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(id));
+        d.setAvatarUrl(avatarUrl);
+        Dipendente saved = dipendenteRepository.save(d);
+        return toDTO(saved);
     }
 }

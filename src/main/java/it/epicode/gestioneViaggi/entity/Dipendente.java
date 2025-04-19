@@ -25,4 +25,7 @@ public class Dipendente {
     @Column(nullable = false, length = 100, unique = true)
     private String email;
 
+    @Column(name="avatar_url", length = 500)
+    private String avatarUrl;
+
 }
