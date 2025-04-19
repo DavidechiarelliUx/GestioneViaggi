@@ -3,6 +3,7 @@ package it.epicode.gestioneViaggi.service;
 import it.epicode.gestioneViaggi.entity.Dipendente;
 import it.epicode.gestioneViaggi.entity.Prenotazione;
 import it.epicode.gestioneViaggi.entity.Viaggio;
+import it.epicode.gestioneViaggi.exception.BadRequestException;
 import it.epicode.gestioneViaggi.exception.NotFoundException;
 import it.epicode.gestioneViaggi.payload.responseDTO.NewPrenotazioneDTO;
 import it.epicode.gestioneViaggi.payload.responseDTO.PrenotazioneResponseDTO;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+
 
 @Service
 public class PrenotazioneService {
@@ -52,10 +55,22 @@ public class PrenotazioneService {
     }
 
     public PrenotazioneResponseDTO save(NewPrenotazioneDTO dto) {
-        Prenotazione p = toEntity(dto);
+        prenotazioneRepository
+                .findByDipendenteIdAndDataRichiesta(dto.dipendenteId(), dto.dataRichiesta())
+                .ifPresent(p -> {
+                    // lancio subito un unchecked:
+                    throw new BadRequestException(
+                            "Dipendente " + dto.dipendenteId() +
+                                    " è già prenotato per il giorno " + dto.dataRichiesta()
+                    );
+                });
+        Prenotazione p     = toEntity(dto);
         Prenotazione saved = prenotazioneRepository.save(p);
+
         return toDTO(saved);
     }
+
+
 
     public Page<PrenotazioneResponseDTO> findAll(int page, int size, String sortBy) {
         return prenotazioneRepository.findAll(PageRequest.of(page, size, Sort.by(sortBy)))

@@ -1,5 +1,6 @@
 package it.epicode.gestioneViaggi.controller;
 
+import it.epicode.gestioneViaggi.enums.Stato;
 import it.epicode.gestioneViaggi.payload.viaggioDTO.NewViaggioDTO;
 import it.epicode.gestioneViaggi.payload.viaggioDTO.ViaggioResponseDTO;
 import it.epicode.gestioneViaggi.service.ViaggioService;
@@ -53,6 +54,14 @@ public class ViaggioController {
     @DeleteMapping("/{viaggioId}/dipendenti/{dipendenteId}")
     public ViaggioResponseDTO removeDipendente(@PathVariable Long viaggioId, @PathVariable Long dipendenteId) {
         return viaggioService.removeDipendente(viaggioId, dipendenteId);
+    }
+
+    @PatchMapping("/{id}/stato")
+    public ViaggioResponseDTO changeState(
+            @PathVariable Long id,
+            @RequestParam Stato nuovoStato
+    ) {
+        return viaggioService.changeState(id, nuovoStato);
     }
 
 }
